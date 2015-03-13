@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<!--
+	Free for personal and commercial use under the CCA 3.0 license
+-->
+<html>
+	<head>
+		<title>'WATCH' OUT</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!--[if lte IE 8]><script src="css/ie/html5shiv.js"></script><![endif]-->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.scrolly.min.js"></script>
+		<script src="js/jquery.scrollzer.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/skel-layers.min.js"></script>
+		<script src="js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="css/skel.css" />
+			<link rel="stylesheet" href="css/style.css" />
+			<link rel="stylesheet" href="css/style-wide.css" />
+		</noscript>
+		<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+	</head>
+	<!--System Time-->
+    <script>
+        $( document ).ready(function()
+        {
+            setInterval('updateClock()', 1000);
+        });
+        function change(theUserName)
+        {
+            document.getElementById("usrname").innerHTML=theUserName;
+        }
+
+        function toAndroidFun()
+        {
+        	Android.toAndroidActivity();
+        }
+        function updateClock()
+        {
+            var d = new Date();
+            var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var date = d.getDay() + " " + month[d.getMonth()] + ", " +  d.getFullYear();
+            var time = d.toLocaleTimeString().toLowerCase();
+            $("#systime").text(date + " at  " + time);
+        
+        }
+    </script>
+	<body>
+		<!-- Header -->
+			<div id="header" class="skel-layers-fixed">
+				<div class="top">
+					<!-- Logo -->
+						<div id="logo">
+							<span class="image avatar48"><img src="images/avatar.jpg" alt="" /></span>
+							<h1 id="title"><p id="usrname"></p></h1>
+							<p>@'WATCH' OUT</p>
+						</div>
+					<!-- Nav -->
+						<nav id="nav">
+							<ul>
+								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-dashboard">Control Panel</span></a></li>
+								<li><a href="#top" id="detection-manager" onClick="toAndroidFun()"><span class="icon fa-comments">Detection Manager</span></a></li>
+								<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-medkit">Medicine Reminder</span></a></li>
+								<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-gears">Settings</span></a></li>
+							</ul>
+						</nav>			
+				</div>
+				<div class="bottom">
+					<!-- Tool Icons -->
+						<ul class="icons">
+							<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+							<li><a href="#" class="icon fa-phone"><span class="label">Hotline</span></a></li>
+							<li><span class="notification-count" id="notification">5</span><a href="#" class="icon fa-globe"><span class="label">Notification</span></a></li>
+						</ul>
+				</div>
+			</div>
+		<!-- Main -->
+			<div id="main">
+				<!-- Main page -->
+					<section id="top" class="one dark cover">
+						<div class="container">
+							<header>
+								<h2 class="alt">Welcome <strong id="usrname"></strong>.</h2>
+								<p id="systime"></p>
+							</header>
+							<footer>
+								<a href="#portfolio" class="button scrolly">Home<span style="padding-left:1em;">View</span></a>
+							</footer>
+							<footer>
+								<a href="#about" class="button scrolly">Control Panel</a>
+							</footer>
+						</div>
+					</section>
+				<!-- Main control panel -->
+					<section id="portfolio" class="two">
+						<div class="container">		
+							<header>
+								<h2>Home View</h2>
+							</header>		
+							<div class="row">
+								<div class="4u">
+									<article class="item">
+										<a href="#" class="image fit"><img src="images/frontdoor.jpg" alt="" /></a>
+										<header>
+											<h3>Front Door</h3><i> May 15, 9:16 AM </i>
+										</header>
+
+									</article>
+								</div>
+								<div class="4u">
+									<article class="item">
+										<!--420x286-->
+										<a href="#" class="image fit"><img src="images/livingroom.jpg" alt="" /></a>
+										<header>
+											<h3>Living Room </h3><i> May 15, 10:16 AM </i>
+										</header>
+									</article>
+								</div>
+								<div class="4u">
+									<article class="item">
+										<a href="#" class="image fit"><img src="images/bedroom.jpg" alt="" /></a>
+										<header>
+											<h3>Bedroom</h3><i> May 15, 11:16 AM </i>
+										</header>
+									</article>
+								</div>
+							</div>
+						</div>
+					</section>
+				<!-- About Us -->
+					<section id="about" class="three">
+						<div class="container">
+							<header>
+								<h2>Control Panel</span></h2>
+							</header>
+							<a href="#" class="image featured"><img src="images/pic08.jpg" alt="" /></a>
+							<p>We are a group of people who aims to provide a better and intelligent life for your elderly.</p>
+						</div>
+					</section>			
+			</div>
+		<!-- Footer -->
+			<div id="footer">			
+				<!-- Copyright -->
+					<ul class="copyright">
+						<li>&copy; 'WATCH' OUT. All rights reserved.</li>
+					</ul>
+			</div>
+	</body>
+</html>
