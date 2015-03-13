@@ -27,6 +27,8 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
 /**
@@ -73,7 +75,8 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public double ANN(double[] paramArrayOfDouble)
     {
-        Log.d(TAG,("Into     ANN      MODULE"));
+//        Log.d(TAG,("Into     ANN      MODULE"));
+        System.out.println(Arrays.toString(paramArrayOfDouble));
         double[] arrayOfDouble1 = { -1.495256509D, 0.189159898D, -1.745627963D, -0.136768115D, 0.343453265D, -1.099452714D, -0.008261038D, 0.319077332D, -1.514411266D, 0.764200433D, 0.872964737D };
         double[] arrayOfDouble2 = { 2.280646265D, 0.967741057D, 2.087885364D, -0.141277674D, 0.536584108D, 0.446628999D, 0.040650166D, 0.73195341D, 1.321347553D, -1.932924615D, 1.600606284D };
         double[] arrayOfDouble3 = { 0.739285384D, 1.181761609D, 0.989122626D, 1.165804538D, -1.520534741D, 0.150345993D, 0.361739402D, -0.315164389D, 0.905024674D, 0.177932131D, 0.5298672840000001D };
@@ -93,7 +96,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         //localAudioManager.setStreamVolume(3, localAudioManager.getStreamMaxVolume(3), 1);
         //this.mMediaPlayer.start();
         Toast.makeText(this, "Fall detected! ", Toast.LENGTH_LONG).show();
-        Log.d(TAG,"Fall detected! mIsPrimaryFall" + this.mIsPrimaryFall);
+//        Log.d(TAG,"Fall detected! mIsPrimaryFall" + this.mIsPrimaryFall);
         if (this.IsGPS) {
             this.mLocationManager.requestLocationUpdates("gps", 0L, 0.0F, this);
         }
@@ -102,53 +105,102 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public double[] Feature(double[] paramArrayOfDouble1, double[] paramArrayOfDouble2, double[] paramArrayOfDouble3, double paramDouble1, double paramDouble2, double paramDouble3, double paramDouble4)
     {
+//        Log.d(TAG,"in Feature_____________________");
+
+        System.out.println("Ax"+Arrays.toString(paramArrayOfDouble1));
+
+        System.out.println("Ay"+Arrays.toString(paramArrayOfDouble2));
+
+        System.out.println("Az"+Arrays.toString(paramArrayOfDouble3));
+
+
         double[] arrayOfDouble1 = new double[100];
         double[] arrayOfDouble2 = new double[10];
-        double d1 = 0.0D;
-        double d2 = 0.0D;
-        double d3 = 0.0D;
-        int i = 0;
-        double d4 = 0.0D;
-        double d5 = 0.0D;
-        double d6 = 0.0D;
-        if (i >= 100)
-        {
-            d4 = d3 / 100.0D;
-            d5 = d1 - d2;
-            d6 = 0.0D;
+        double tmp = 0.0;
+        double std = 0.0;
+        double variance;
+        double mean;
+        double tmpAvg = 0.0;
+        double max = arrayOfDouble1[0];
+        double min = arrayOfDouble1[0];
+        double range = 0.0;
+        for (int j = 0; j < arrayOfDouble1.length; j++) {
+            arrayOfDouble1[j] = Math.pow(Math.pow(paramArrayOfDouble1[j], 2.0D)
+                    + Math.pow(paramArrayOfDouble2[j], 2.0D)
+                    + Math.pow(paramArrayOfDouble3[j], 2.0D), 0.5D);
         }
-        for (int j = 0; ; j++)
-        {
-            if (j >= 100)
-            {
-                double d7 = d6 / 100.0D;
-                double d8 = Math.pow(d7, 0.5D);
-                arrayOfDouble2[0] = paramDouble4;
-                arrayOfDouble2[1] = paramDouble1;
-                arrayOfDouble2[2] = paramDouble3;
-                arrayOfDouble2[3] = paramDouble2;
-                arrayOfDouble2[4] = d1;
-                arrayOfDouble2[5] = d2;
-                arrayOfDouble2[6] = d4;
-                arrayOfDouble2[7] = d5;
-                arrayOfDouble2[8] = d7;
-                arrayOfDouble2[9] = d8;
-                arrayOfDouble1[i] = Math.pow(Math.pow(paramArrayOfDouble1[i], 2.0D) + Math.pow(paramArrayOfDouble2[i], 2.0D) + Math.pow(paramArrayOfDouble3[i], 2.0D), 0.5D);
-                if (i == 0)
-                {
-                    d1 = arrayOfDouble1[i];
-                    d2 = arrayOfDouble1[i];
-                }
-                if (d1 < arrayOfDouble1[i])
-                    d1 = arrayOfDouble1[i];
-                if (d2 > arrayOfDouble1[i])
-                    d2 = arrayOfDouble1[i];
-                d3 += arrayOfDouble1[i];
-                i++;
-                break;
+
+        for (int j = 1; j < arrayOfDouble1.length; j++) {
+            if(arrayOfDouble1[j] > max) {
+                max = arrayOfDouble1[j];
             }
-            d6 += Math.pow(arrayOfDouble1[j] - d4, 2.0D);
         }
+
+        for (int j = 1; j < arrayOfDouble1.length; j++) {
+            if(arrayOfDouble1[j] < min) {
+                min = arrayOfDouble1[j];
+            }
+        }
+
+        for (int j = 0; j < arrayOfDouble1.length; j++) {
+            tmp += Math.sqrt(arrayOfDouble1[j]);
+            tmpAvg += arrayOfDouble1[j];
+        }
+
+        variance = tmp / arrayOfDouble1.length;
+        mean = tmpAvg/arrayOfDouble1.length;
+        std = Math.sqrt(variance);
+        range = max-min;
+        arrayOfDouble2[0] = paramDouble4;
+        arrayOfDouble2[1] = paramDouble1;
+        arrayOfDouble2[2] = paramDouble3;
+        arrayOfDouble2[3] = paramDouble2;
+        arrayOfDouble2[4] = max;
+        arrayOfDouble2[5] = min;
+        arrayOfDouble2[6] = mean;
+        arrayOfDouble2[7] = range;
+        arrayOfDouble2[8] = variance;
+        arrayOfDouble2[9] = std;
+//        for (int j = 0; ; j++)
+//        {
+//            if (j >= 100)
+//            {
+//                double d7 = d6 / 100.0D;
+//                double d8 = Math.pow(d7, 0.5D);
+//                arrayOfDouble2[0] = paramDouble4;
+//                arrayOfDouble2[1] = paramDouble1;
+//                arrayOfDouble2[2] = paramDouble3;
+//                arrayOfDouble2[3] = paramDouble2;
+//                arrayOfDouble2[4] = d1;
+//                arrayOfDouble2[5] = d2;
+//                arrayOfDouble2[6] = d4;
+//                arrayOfDouble2[7] = d5;
+//                arrayOfDouble2[8] = d7;
+//                arrayOfDouble2[9] = d8;
+//
+//                arrayOfDouble1[i] = Math.pow(Math.pow(paramArrayOfDouble1[i], 2.0D) + Math.pow(paramArrayOfDouble2[i], 2.0D) + Math.pow(paramArrayOfDouble3[i], 2.0D), 0.5D);
+//                if (i == 0)
+//                {
+//                    d1 = arrayOfDouble1[i];
+//                    d2 = arrayOfDouble1[i];
+//                    System.out.println("D1_____"+Double.toString(d1)+"D2_____"+Double.toString(d2));
+//                }
+//                if (d1 < arrayOfDouble1[i]) {
+//                    d1 = arrayOfDouble1[i];
+//                    System.out.println("D1______" + Double.toString(d1) + "D2____" + Double.toString(d2));
+//                }
+//                if (d2 > arrayOfDouble1[i]) {
+//                    d2 = arrayOfDouble1[i];
+//                    System.out.println("D1______"+Double.toString(d1)+"D2_____"+Double.toString(d2));
+//                }
+//                d3 += arrayOfDouble1[i];
+//                System.out.println("D3______"+Double.toString(d3));
+//                i++;
+//                break;
+//            }
+//            d6 += Math.pow(arrayOfDouble1[j] - d4, 2.0D);
+//        }
+//        System.out.println(Arrays.toString(arrayOfDouble2));
         return arrayOfDouble2;
     }
 
@@ -187,7 +239,6 @@ public class Fall_DetectionService extends Service implements SensorEventListene
     {
         this.mIsPrimaryFall = true;
         this.mPrimaryFallTime = this.mSysTime;
-        Log.d(TAG,"Primary Fall Detected!");
         displayNotification("Primary Fall Detected!");
     }
 
@@ -311,8 +362,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
             return;
         this.mSysTime = System.currentTimeMillis();
         this.mMean = Math.pow(Math.pow(paramSensorEvent.values[0], 2.0D) + Math.pow(paramSensorEvent.values[1], 2.0D) + Math.pow(paramSensorEvent.values[2], 2.0D), 0.5D);
-        //Log.d(TAG,"_____________sysTime_________"+Long.toString(this.mSysTime));
-        //Log.d(TAG,Double.toString(this.mMean));
+
         if ((!this.mIsFall))        //MAIN_ACTIVITY.ISFOREGROUND
             this.mM = String.valueOf(this.mMean);
         if ((this.mIsFall) && (this.mSysTime - this.mFallTime < 1000.0D + this.mFTime))
@@ -325,27 +375,13 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         }
         while (true)
         {
-/*
-            Log.d(TAG, "this.Ax" + this.Ax[this.mCunter]);
-            Log.d(TAG, "this.Ay"+this.Ay[this.mCunter]);
-            Log.d(TAG, "this.Az"+this.Az[this.mCunter]);
-*/
             if ((this.mIsPrimaryFall) && (this.mSysTime - this.mPrimaryFallTime < this.mLTime))
             {
-                Log.d(TAG,"mIsPrimaryFall value is -----"+this.mIsPrimaryFall);
-                Log.d(TAG,"mIsFall value is -----"+this.mIsFall);
-                Log.d(TAG,"________into isPrimaryFall interation");
-                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D) {
+                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D)
                     FallDetected();
-                }
-                if ((this.mMean > 11.0D) && (this.mSysTime - this.mPrimaryFallTime > 3000L)) {
-                    Log.d(TAG, "_______the mMean now is ........." + this.mMean);
-                }
+                if ((this.mMean > 11.0D) && (this.mSysTime - this.mPrimaryFallTime > 3000L))
                 GoNormal();
             }
-
-            if ((!this.mIsFall) || (this.mSysTime - this.mFallTime >= this.mFTime) || (this.mMean <= 15.0D))
-                break;
 
             if ((!this.mIsFall) && (!this.mIsPrimaryFall))  //True True
             {
@@ -353,23 +389,32 @@ public class Fall_DetectionService extends Service implements SensorEventListene
                 this.Ay[this.mCunter] = (237.00277800000001D * paramSensorEvent.values[1] / 10.0159442D);
                 this.Az[this.mCunter] = (237.00277800000001D * paramSensorEvent.values[2] / 10.0159442D);
                 this.mCunter = (1 + this.mCunter);
-
                 if (this.mCunter == 100)
                 {
                     this.mCunter = 50;
                     System.arraycopy(this.Ax, 50, this.Ax, 0, -50 + this.Ax.length);
                     System.arraycopy(this.Ay, 50, this.Ay, 0, -50 + this.Ay.length);
                     System.arraycopy(this.Az, 50, this.Az, 0, -50 + this.Az.length);
-                    Log.d(TAG, Double.toString(ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex))));
+                    System.out.println(Arrays.toString(this.Ax));
+                    System.out.println(Arrays.toString(this.Ay));
+                    System.out.println(Arrays.toString(this.Az));
+
+//                    Log.d(TAG,"ANN value _________        "+Double.toString(ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex))));
+//                    Log.d(TAG,"isFall value ______        "+this.mIsFall);
+//                    Log.d(TAG,"isPrimaryFall _____        "+this.mIsPrimaryFall);
                     if (ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex)) > -0.1D)
                     {
+//                        Log.d(TAG,"After ANN ________________________");
+//                        Log.d(TAG,"ANN value _________        "+Double.toString(ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex))));
+//                        Log.d(TAG,"isFall value ______        "+this.mIsFall);
+//                        Log.d(TAG,"isPrimaryFall _____        "+this.mIsPrimaryFall);
                         GoPrimaryFall();
                     }
                 }
             }
+            if ((!this.mIsFall) || (this.mSysTime - this.mFallTime >= this.mFTime) || (this.mMean <= 15.0D))
+                break;
             GoNormal();
-            Log.d(TAG,"mIsPrimaryFall value is -----"+this.mIsPrimaryFall);
-            Log.d(TAG,"mIsFall value is -----"+this.mIsFall);
         }
     }
 

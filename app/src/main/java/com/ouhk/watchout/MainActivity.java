@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
             Intent foreGroundInstance = new Intent(getApplicationContext(), Fall_DetectionService.class);
             foreGroundInstance.putExtra("mIsInForeground",mIsInForeground);
             startService(foreGroundInstance);
-            Log.d(TAG, "______________________________Going to fall_DetectionService!");
+            //Log.d(TAG, "______________________________Going to fall_DetectionService!");
         }
     }
 }
