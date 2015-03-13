@@ -73,6 +73,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public double ANN(double[] paramArrayOfDouble)
     {
+        Log.d(TAG,("Into     ANN      MODULE"));
         double[] arrayOfDouble1 = { -1.495256509D, 0.189159898D, -1.745627963D, -0.136768115D, 0.343453265D, -1.099452714D, -0.008261038D, 0.319077332D, -1.514411266D, 0.764200433D, 0.872964737D };
         double[] arrayOfDouble2 = { 2.280646265D, 0.967741057D, 2.087885364D, -0.141277674D, 0.536584108D, 0.446628999D, 0.040650166D, 0.73195341D, 1.321347553D, -1.932924615D, 1.600606284D };
         double[] arrayOfDouble3 = { 0.739285384D, 1.181761609D, 0.989122626D, 1.165804538D, -1.520534741D, 0.150345993D, 0.361739402D, -0.315164389D, 0.905024674D, 0.177932131D, 0.5298672840000001D };
@@ -91,11 +92,12 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         //AudioManager localAudioManager = (AudioManager)getSystemService("audio");
         //localAudioManager.setStreamVolume(3, localAudioManager.getStreamMaxVolume(3), 1);
         //this.mMediaPlayer.start();
-        Toast.makeText(this, "Please Stop the Alarm! ", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Fall detected! ", Toast.LENGTH_LONG).show();
+        Log.d(TAG,"Fall detected! mIsPrimaryFall" + this.mIsPrimaryFall);
         if (this.IsGPS) {
             this.mLocationManager.requestLocationUpdates("gps", 0L, 0.0F, this);
         }
-        displayNotification("Fall");
+        displayNotification("Fall detected!");
     }
 
     public double[] Feature(double[] paramArrayOfDouble1, double[] paramArrayOfDouble2, double[] paramArrayOfDouble3, double paramDouble1, double paramDouble2, double paramDouble3, double paramDouble4)
@@ -152,11 +154,9 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public void GoNormal()
     {
-        String myAge = "50";
-        String myHeight = "150";
-        String myWeight = "65";
-        //mSex
-        //RadioButton localRadioButton = (RadioButton)MAIN_ACTIVITY.findViewById(2131099673);
+        String myAge = "56";
+        String myHeight = "160";
+        String myWeight = "70";
         String myPhoneNo = "12345678";
         this.mIsFall = false;
         this.mIsPrimaryFall = false;
@@ -177,7 +177,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
                 this.mHeight = Double.parseDouble(myHeight);
             if (myWeight.length() < 0)
                 this.mWeight = Double.parseDouble(myWeight);
-            displayNotification("Normal");
+            displayNotification("Normal situation.");
             this.mSex = -1.0D;
             return;
         }
@@ -187,7 +187,8 @@ public class Fall_DetectionService extends Service implements SensorEventListene
     {
         this.mIsPrimaryFall = true;
         this.mPrimaryFallTime = this.mSysTime;
-        displayNotification("Primary Fall");
+        Log.d(TAG,"Primary Fall Detected!");
+        displayNotification("Primary Fall Detected!");
     }
 
     public void Start()
@@ -209,13 +210,8 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public void displayNotification(String paramString)
     {
-        /*
-        this.mNotification = new Notification(paramInt, paramString, System.currentTimeMillis());
-        PendingIntent localPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-        this.mNotification.setLatestEventInfo(this, paramString, "", localPendingIntent);
-        this.mNotificationManager.notify(1, this.mNotification);
-        */
         String myText = paramString;
+        Log.i(TAG, paramString);
         Log.i(TAG, "Message received. The Text is _____" + myText);
         //Acquire notification service
         NotificationManager myNotificationManager = (NotificationManager)getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
@@ -259,8 +255,6 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         this.IsCustomSMS = localSharedPreferences.getBoolean("CustomSMS", false);
         this.IsTimer = localSharedPreferences.getBoolean("Timer", false);
         this.IsGPS = localSharedPreferences.getBoolean("GPS", true);
-        //if (this.IsCustomSMS)
-        //    this.mMessage = localSharedPreferences.getString("CustomSMSString", "");
         if (this.IsTimer)
         {
             this.mFTime = (1000.0D * Double.valueOf(localSharedPreferences.getString("FallTime", "")).doubleValue());
@@ -321,34 +315,45 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         //Log.d(TAG,Double.toString(this.mMean));
         if ((!this.mIsFall))        //MAIN_ACTIVITY.ISFOREGROUND
             this.mM = String.valueOf(this.mMean);
-        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         if ((this.mIsFall) && (this.mSysTime - this.mFallTime < 1000.0D + this.mFTime))
         {
             this.mM = String.valueOf((int)(this.mFTime / 1000.0D) - (this.mSysTime - this.mFallTime) / 1000L);
             if (this.mSysTime - this.mFallTime > this.mFTime)
             {
                 this.mFallTime -= 1000L;
-                //if (!this.IsCustomSMS)
-                    //break label617;
-                //this.mMessage = (this.mMessage + " At time: " + cal.getInstance().getTime());
             }
         }
         while (true)
         {
-            //sendSMS(this.mPhoneNo, this.mMessage);
+/*
+            Log.d(TAG, "this.Ax" + this.Ax[this.mCunter]);
+            Log.d(TAG, "this.Ay"+this.Ay[this.mCunter]);
+            Log.d(TAG, "this.Az"+this.Az[this.mCunter]);
+*/
             if ((this.mIsPrimaryFall) && (this.mSysTime - this.mPrimaryFallTime < this.mLTime))
             {
-                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D)
+                Log.d(TAG,"mIsPrimaryFall value is -----"+this.mIsPrimaryFall);
+                Log.d(TAG,"mIsFall value is -----"+this.mIsFall);
+                Log.d(TAG,"________into isPrimaryFall interation");
+                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D) {
                     FallDetected();
-                if ((this.mMean > 11.0D) && (this.mSysTime - this.mPrimaryFallTime > 3000L))
-                    GoNormal();
+                }
+                if ((this.mMean > 11.0D) && (this.mSysTime - this.mPrimaryFallTime > 3000L)) {
+                    Log.d(TAG, "_______the mMean now is ........." + this.mMean);
+                }
+                GoNormal();
             }
-            if ((!this.mIsFall) && (!this.mIsPrimaryFall))
+
+            if ((!this.mIsFall) || (this.mSysTime - this.mFallTime >= this.mFTime) || (this.mMean <= 15.0D))
+                break;
+
+            if ((!this.mIsFall) && (!this.mIsPrimaryFall))  //True True
             {
                 this.Ax[this.mCunter] = (237.00277800000001D * paramSensorEvent.values[0] / 10.0159442D);
                 this.Ay[this.mCunter] = (237.00277800000001D * paramSensorEvent.values[1] / 10.0159442D);
                 this.Az[this.mCunter] = (237.00277800000001D * paramSensorEvent.values[2] / 10.0159442D);
                 this.mCunter = (1 + this.mCunter);
+
                 if (this.mCunter == 100)
                 {
                     this.mCunter = 50;
@@ -362,15 +367,9 @@ public class Fall_DetectionService extends Service implements SensorEventListene
                     }
                 }
             }
-            if ((!this.mIsFall) || (this.mSysTime - this.mFallTime >= this.mFTime) || (this.mMean <= 15.0D))
-                break;
             GoNormal();
-            //this.mMediaPlayer.pause();
-            //label617: if (this.IsGPS)
-            //if(this.IsGPS)
-            //    this.mMessage = ("It appears that " + this.mEName + " has Fallen at " + cal.getInstance().getTime() + " and may require assistance." + this.mHerHis + " Location information will be provided whenever possible.");
-            //else
-            //    this.mMessage = ("It appears that " + this.mEName + " has Fallen at " + cal.getInstance().getTime() + " and may require assistance.");
+            Log.d(TAG,"mIsPrimaryFall value is -----"+this.mIsPrimaryFall);
+            Log.d(TAG,"mIsFall value is -----"+this.mIsFall);
         }
     }
 
