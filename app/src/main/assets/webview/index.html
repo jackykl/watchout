@@ -33,10 +33,13 @@
         {
             document.getElementById("usrname").innerHTML=theUserName;
         }
-
         function toAndroidFun()
         {
         	Android.toAndroidActivity();
+        }
+        function toMedFun()
+        {
+            Android.toMedicationReminder();
         }
         function updateClock()
         {
@@ -63,7 +66,7 @@
 							<ul>
 								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-dashboard">Control Panel</span></a></li>
 								<li><a href="#top" id="detection-manager" onClick="toAndroidFun()"><span class="icon fa-comments">Detection Manager</span></a></li>
-								<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-medkit">Medicine Reminder</span></a></li>
+								<li><a href="#top" id="medication-reminder" onClick="toMedFun()"><span class="icon fa-medkit">Medication Reminder</span></a></li>
 								<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-gears">Settings</span></a></li>
 							</ul>
 						</nav>			

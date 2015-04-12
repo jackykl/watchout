@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -19,12 +20,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -72,11 +76,10 @@ public class Fall_DetectionService extends Service implements SensorEventListene
     long mSysTime;
     private PowerManager.WakeLock mWakeLock;
     double mWeight = 65.0D;
+    private MediaPlayer mMediaPlayer;
 
     public double ANN(double[] paramArrayOfDouble)
     {
-//        Log.d(TAG,("Into     ANN      MODULE"));
-        System.out.println(Arrays.toString(paramArrayOfDouble));
         double[] arrayOfDouble1 = { -1.495256509D, 0.189159898D, -1.745627963D, -0.136768115D, 0.343453265D, -1.099452714D, -0.008261038D, 0.319077332D, -1.514411266D, 0.764200433D, 0.872964737D };
         double[] arrayOfDouble2 = { 2.280646265D, 0.967741057D, 2.087885364D, -0.141277674D, 0.536584108D, 0.446628999D, 0.040650166D, 0.73195341D, 1.321347553D, -1.932924615D, 1.600606284D };
         double[] arrayOfDouble3 = { 0.739285384D, 1.181761609D, 0.989122626D, 1.165804538D, -1.520534741D, 0.150345993D, 0.361739402D, -0.315164389D, 0.905024674D, 0.177932131D, 0.5298672840000001D };
@@ -92,11 +95,11 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         this.mIsFall = true;
         this.mIsPrimaryFall = false;
         this.mFallTime = this.mSysTime;
-        //AudioManager localAudioManager = (AudioManager)getSystemService("audio");
-        //localAudioManager.setStreamVolume(3, localAudioManager.getStreamMaxVolume(3), 1);
-        //this.mMediaPlayer.start();
+        AudioManager localAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        //localAudioManager.setStreamVolume(3, localAudioManager.getStreamVolume(3), 1);
+        localAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,10,1);
+        mMediaPlayer.start();
         Toast.makeText(this, "Fall detected! ", Toast.LENGTH_LONG).show();
-//        Log.d(TAG,"Fall detected! mIsPrimaryFall" + this.mIsPrimaryFall);
         if (this.IsGPS) {
             this.mLocationManager.requestLocationUpdates("gps", 0L, 0.0F, this);
         }
@@ -105,15 +108,6 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public double[] Feature(double[] paramArrayOfDouble1, double[] paramArrayOfDouble2, double[] paramArrayOfDouble3, double paramDouble1, double paramDouble2, double paramDouble3, double paramDouble4)
     {
-//        Log.d(TAG,"in Feature_____________________");
-
-        System.out.println("Ax"+Arrays.toString(paramArrayOfDouble1));
-
-        System.out.println("Ay"+Arrays.toString(paramArrayOfDouble2));
-
-        System.out.println("Az"+Arrays.toString(paramArrayOfDouble3));
-
-
         double[] arrayOfDouble1 = new double[100];
         double[] arrayOfDouble2 = new double[10];
         double tmp = 0.0;
@@ -229,7 +223,8 @@ public class Fall_DetectionService extends Service implements SensorEventListene
                 this.mHeight = Double.parseDouble(myHeight);
             if (myWeight.length() < 0)
                 this.mWeight = Double.parseDouble(myWeight);
-            displayNotification("Normal situation.");
+            //displayNotification("Normal situation.");
+            Toast.makeText(getBaseContext(), "Normal State.", Toast.LENGTH_LONG).show();
             this.mSex = -1.0D;
             return;
         }
@@ -261,23 +256,59 @@ public class Fall_DetectionService extends Service implements SensorEventListene
 
     public void displayNotification(String paramString)
     {
+        //Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         String myText = paramString;
-        Log.i(TAG, paramString);
-        Log.i(TAG, "Message received. The Text is _____" + myText);
+        String primaryFall = "Primary Fall Detected!";
+        String fallDetected = "Fall detected!";
         //Acquire notification service
         NotificationManager myNotificationManager = (NotificationManager)getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
         // Set intent here
         Intent notifyIntent = new Intent(getApplicationContext(), MainActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent appIntent = PendingIntent.getActivity(getApplicationContext(),0,notifyIntent,0);
+        if(myText.equals(primaryFall)){
+            Toast.makeText(getBaseContext(), "Primary Fall Detected.", Toast.LENGTH_LONG).show();
+    }
+        else if(myText.equals(fallDetected)){
+            NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.app_icon)
+                    .setContentTitle(myText)
+//                    .setContentText(myText)
+                    .setContentIntent(appIntent)
+//                    .setSound(soundUri)
+                    .setDefaults(Notification.DEFAULT_ALL);
+            myNotificationManager.notify(0, myBuilder.build());
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Turn off the alarm.");
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.release();
+                }
+            });
+            AlertDialog alert = builder.create();
+            alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            alert.show();
+            //sendSMS();
+        }
+    }
 
-        NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.app_icon)
-                .setContentTitle("'Watch'Out!")
-                .setContentText(myText)
-                .setContentIntent(appIntent)
-                .setDefaults(Notification.DEFAULT_ALL);
-        myNotificationManager.notify(0,myBuilder.build());
+    protected void sendSMS ()
+    {
+        String phoneNo = "+85291602990";
+        String message = "It appears that Emma has fallen and may require assistance.";
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNo, null, message, null, null);
+            Toast.makeText(getApplicationContext(), "SMS sent.",
+                    Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),
+                    "SMS faild, please try again.",
+                    Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
     }
 
     public void onAccuracyChanged(Sensor paramSensor, int paramInt)
@@ -295,10 +326,11 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         this.mFallTime = System.currentTimeMillis();
         this.mPrimaryFallTime = System.currentTimeMillis();
         this.mEName =  "Emma";
-        //this.mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.click);
         this.mLocationManager = ((LocationManager)getSystemService(LOCATION_SERVICE));
         this.mSensorManager = ((SensorManager)getSystemService(SENSOR_SERVICE));
         this.mAccelerometer = this.mSensorManager.getDefaultSensor(1);
+        Uri alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        this.mMediaPlayer = MediaPlayer.create(this, alarmTone);
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.SCREEN_DIM_WAKE_LOCK, "WakeLock");
         this.mNotificationManager = ((NotificationManager)this.getSystemService(NOTIFICATION_SERVICE));
@@ -312,7 +344,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
             this.mLTime = (1000.0D * Double.valueOf(localSharedPreferences.getString("LieTime", "")).doubleValue());
         }
         Start();
-        Toast.makeText(getBaseContext(), "The Fall detection service is Running", Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), "The Fall detection service is Running", Toast.LENGTH_LONG).show();
     }
 
     public void onDestroy()
@@ -377,8 +409,10 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         {
             if ((this.mIsPrimaryFall) && (this.mSysTime - this.mPrimaryFallTime < this.mLTime))
             {
-                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D)
+//              if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 1000.0D) {
+                if (this.mSysTime - this.mPrimaryFallTime > this.mLTime - 25000.0D) {
                     FallDetected();
+                }
                 if ((this.mMean > 11.0D) && (this.mSysTime - this.mPrimaryFallTime > 3000L))
                 GoNormal();
             }
@@ -395,19 +429,9 @@ public class Fall_DetectionService extends Service implements SensorEventListene
                     System.arraycopy(this.Ax, 50, this.Ax, 0, -50 + this.Ax.length);
                     System.arraycopy(this.Ay, 50, this.Ay, 0, -50 + this.Ay.length);
                     System.arraycopy(this.Az, 50, this.Az, 0, -50 + this.Az.length);
-                    System.out.println(Arrays.toString(this.Ax));
-                    System.out.println(Arrays.toString(this.Ay));
-                    System.out.println(Arrays.toString(this.Az));
 
-//                    Log.d(TAG,"ANN value _________        "+Double.toString(ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex))));
-//                    Log.d(TAG,"isFall value ______        "+this.mIsFall);
-//                    Log.d(TAG,"isPrimaryFall _____        "+this.mIsPrimaryFall);
                     if (ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex)) > -0.1D)
                     {
-//                        Log.d(TAG,"After ANN ________________________");
-//                        Log.d(TAG,"ANN value _________        "+Double.toString(ANN(Feature(this.Ax, this.Ay, this.Az, this.mAge, this.mHeight, this.mWeight, this.mSex))));
-//                        Log.d(TAG,"isFall value ______        "+this.mIsFall);
-//                        Log.d(TAG,"isPrimaryFall _____        "+this.mIsPrimaryFall);
                         GoPrimaryFall();
                     }
                 }

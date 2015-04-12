@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         });
         myWebView.loadUrl("file:///android_asset/webview/index.html");
         this.setContentView(myWebView);
-        onStartService();
+        //onStartService();
     }
 
     public void onStartService() {
@@ -92,12 +92,18 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface
         public void toAndroidActivity() {
-            String toast = "Going into activity!";
-            Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
+            String toast = "Going into activity.";
+            //Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
             Intent foreGroundInstance = new Intent(getApplicationContext(), Fall_DetectionService.class);
             foreGroundInstance.putExtra("mIsInForeground",mIsInForeground);
             startService(foreGroundInstance);
-            //Log.d(TAG, "______________________________Going to fall_DetectionService!");
+        }
+        @JavascriptInterface
+        public void toMedicationReminder() {
+            String toast = "Going into Medication Activity.";
+            Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getApplicationContext(), ReminderActivity.class);
+            startActivity(intent);
         }
     }
 }
