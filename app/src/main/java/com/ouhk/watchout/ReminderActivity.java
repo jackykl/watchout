@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,8 +39,9 @@ public class ReminderActivity extends ListActivity implements SearchView.OnQuery
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getActionBar().hide();
         setContentView(R.layout.reminder_activity);
-
         SearchView searchview = (SearchView) findViewById(R.id.searchView);
         searchview.setOnQueryTextListener(this);
 
@@ -238,8 +240,8 @@ public class ReminderActivity extends ListActivity implements SearchView.OnQuery
     private void shareItem(int index) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "hello");
-        intent.putExtra(Intent.EXTRA_TEXT, "watchout" + Utils.getItem(index).get("content"));
-        startActivity(Intent.createChooser(intent, "watchout"));
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Reminder");
+        intent.putExtra(Intent.EXTRA_TEXT, "TAKE Medicines at" + Utils.getItem(index).get("content"));
+        startActivity(Intent.createChooser(intent, "Share to"));
     }
 }

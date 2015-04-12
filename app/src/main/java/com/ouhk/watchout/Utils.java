@@ -1,6 +1,7 @@
 package com.ouhk.watchout;
 
 import android.text.format.Time;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 
 public class Utils {
 
+    private static final String TAG="Utils.java______";
 	private static ArrayList<HashMap<String,String>> arraylist = new ArrayList<HashMap<String,String>>();
 	private static ArrayList<HashMap<String,String>> showlist = new ArrayList<HashMap<String,String>>();
 	private static Long[] tempTimeMillis = null;
@@ -80,6 +82,7 @@ public class Utils {
 	public static String timeTransfer(int i){
 		Time time = new Time();
 		long tempLong = Long.parseLong(arraylist.get(i).get("datetime"));
+        Log.d(TAG,""+tempLong);
 		tempTimeMillis[i] = tempLong;
 		time.setToNow();
 		String dateNow = time.toString().substring(0,8);

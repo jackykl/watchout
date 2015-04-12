@@ -3,6 +3,7 @@ package com.ouhk.watchout;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -140,6 +142,8 @@ public class EditActivity extends Activity{
 			}
 			if(!alerttime.equals(tempAlerttime) && !alerttime.equals(""))
 			{
+                System.out.println("TempTime is "+tempAlerttime);
+                System.out.println("The alert time is "+alerttime);
 				System.out.println("alerttime done!");
 				alertSet();
 			}
