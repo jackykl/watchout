@@ -97,7 +97,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         this.mFallTime = this.mSysTime;
         AudioManager localAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         //localAudioManager.setStreamVolume(3, localAudioManager.getStreamVolume(3), 1);
-        localAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,10,1);
+        localAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,9,1);
         mMediaPlayer.start();
         Toast.makeText(this, "Fall detected! ", Toast.LENGTH_LONG).show();
         if (this.IsGPS) {
@@ -155,64 +155,21 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         arrayOfDouble2[7] = range;
         arrayOfDouble2[8] = variance;
         arrayOfDouble2[9] = std;
-//        for (int j = 0; ; j++)
-//        {
-//            if (j >= 100)
-//            {
-//                double d7 = d6 / 100.0D;
-//                double d8 = Math.pow(d7, 0.5D);
-//                arrayOfDouble2[0] = paramDouble4;
-//                arrayOfDouble2[1] = paramDouble1;
-//                arrayOfDouble2[2] = paramDouble3;
-//                arrayOfDouble2[3] = paramDouble2;
-//                arrayOfDouble2[4] = d1;
-//                arrayOfDouble2[5] = d2;
-//                arrayOfDouble2[6] = d4;
-//                arrayOfDouble2[7] = d5;
-//                arrayOfDouble2[8] = d7;
-//                arrayOfDouble2[9] = d8;
-//
-//                arrayOfDouble1[i] = Math.pow(Math.pow(paramArrayOfDouble1[i], 2.0D) + Math.pow(paramArrayOfDouble2[i], 2.0D) + Math.pow(paramArrayOfDouble3[i], 2.0D), 0.5D);
-//                if (i == 0)
-//                {
-//                    d1 = arrayOfDouble1[i];
-//                    d2 = arrayOfDouble1[i];
-//                    System.out.println("D1_____"+Double.toString(d1)+"D2_____"+Double.toString(d2));
-//                }
-//                if (d1 < arrayOfDouble1[i]) {
-//                    d1 = arrayOfDouble1[i];
-//                    System.out.println("D1______" + Double.toString(d1) + "D2____" + Double.toString(d2));
-//                }
-//                if (d2 > arrayOfDouble1[i]) {
-//                    d2 = arrayOfDouble1[i];
-//                    System.out.println("D1______"+Double.toString(d1)+"D2_____"+Double.toString(d2));
-//                }
-//                d3 += arrayOfDouble1[i];
-//                System.out.println("D3______"+Double.toString(d3));
-//                i++;
-//                break;
-//            }
-//            d6 += Math.pow(arrayOfDouble1[j] - d4, 2.0D);
-//        }
-//        System.out.println(Arrays.toString(arrayOfDouble2));
         return arrayOfDouble2;
     }
 
     public void GoNormal()
     {
-        String myAge = "56";
-        String myHeight = "160";
-        String myWeight = "70";
-        String myPhoneNo = "12345678";
+        String myAge = "70";
+        String myHeight = "150";
+        String myWeight = "50";
+        String myPhoneNo = "NAN";
         this.mIsFall = false;
         this.mIsPrimaryFall = false;
         this.mCunter = 0;
         this.mLocationText = "";
         if (this.IsGPS)
             this.mLocationManager.removeUpdates(this);
-        //localTextView2.setText("Acceleration = ");
-        //localTextView1.setText("0.0000");
-        //this.mMediaPlayer.setLooping(true);
         this.mPhoneNo = myPhoneNo;
             this.mSex = -1.0D;
         for (this.mHerHis = "Her"; ; this.mHerHis = "His")
@@ -234,7 +191,8 @@ public class Fall_DetectionService extends Service implements SensorEventListene
     {
         this.mIsPrimaryFall = true;
         this.mPrimaryFallTime = this.mSysTime;
-        displayNotification("Primary Fall Detected!");
+        displayNotification("Primary Fall State.");
+
     }
 
     public void Start()
@@ -249,14 +207,12 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         GoNormal();
         this.mSensorManager.unregisterListener(this);
         this.mNotificationManager.cancelAll();
-        //this.mMediaPlayer.pause();
         if (this.mWakeLock.isHeld())
             this.mWakeLock.release();
     }
 
     public void displayNotification(String paramString)
     {
-        //Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         String myText = paramString;
         String primaryFall = "Primary Fall Detected!";
         String fallDetected = "Fall detected!";
@@ -267,7 +223,7 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent appIntent = PendingIntent.getActivity(getApplicationContext(),0,notifyIntent,0);
         if(myText.equals(primaryFall)){
-            Toast.makeText(getBaseContext(), "Primary Fall Detected.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "Primary Fall State.", Toast.LENGTH_LONG).show();
     }
         else if(myText.equals(fallDetected)){
             NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(getApplicationContext())
@@ -290,13 +246,13 @@ public class Fall_DetectionService extends Service implements SensorEventListene
             AlertDialog alert = builder.create();
             alert.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             alert.show();
-            //sendSMS();
+            sendSMS();
         }
     }
 
     protected void sendSMS ()
     {
-        String phoneNo = "+85291602990";
+        String phoneNo = "+85298255575";
         String message = "It appears that Emma has fallen and may require assistance.";
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -344,14 +300,13 @@ public class Fall_DetectionService extends Service implements SensorEventListene
             this.mLTime = (1000.0D * Double.valueOf(localSharedPreferences.getString("LieTime", "")).doubleValue());
         }
         Start();
-        //Toast.makeText(getBaseContext(), "The Fall detection service is Running", Toast.LENGTH_LONG).show();
     }
 
     public void onDestroy()
     {
         super.onDestroy();
         Stop();
-        Toast.makeText(getBaseContext(), "The Fall detection service is Off", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Fall detection service is Off", Toast.LENGTH_LONG).show();
     }
 
     public void onLocationChanged(Location paramLocation)
@@ -451,3 +406,46 @@ public class Fall_DetectionService extends Service implements SensorEventListene
         return 2.0D / (1.0D + Math.exp(-2.0D * paramDouble)) - 1.0D;
     }
 }
+
+
+//        Feature()
+//        for (int j = 0; ; j++)
+//        {
+//            if (j >= 100)
+//            {
+//                double d7 = d6 / 100.0D;
+//                double d8 = Math.pow(d7, 0.5D);
+//                arrayOfDouble2[0] = paramDouble4;
+//                arrayOfDouble2[1] = paramDouble1;
+//                arrayOfDouble2[2] = paramDouble3;
+//                arrayOfDouble2[3] = paramDouble2;
+//                arrayOfDouble2[4] = d1;
+//                arrayOfDouble2[5] = d2;
+//                arrayOfDouble2[6] = d4;
+//                arrayOfDouble2[7] = d5;
+//                arrayOfDouble2[8] = d7;
+//                arrayOfDouble2[9] = d8;
+//
+//                arrayOfDouble1[i] = Math.pow(Math.pow(paramArrayOfDouble1[i], 2.0D) + Math.pow(paramArrayOfDouble2[i], 2.0D) + Math.pow(paramArrayOfDouble3[i], 2.0D), 0.5D);
+//                if (i == 0)
+//                {
+//                    d1 = arrayOfDouble1[i];
+//                    d2 = arrayOfDouble1[i];
+//                    System.out.println("D1_____"+Double.toString(d1)+"D2_____"+Double.toString(d2));
+//                }
+//                if (d1 < arrayOfDouble1[i]) {
+//                    d1 = arrayOfDouble1[i];
+//                    System.out.println("D1______" + Double.toString(d1) + "D2____" + Double.toString(d2));
+//                }
+//                if (d2 > arrayOfDouble1[i]) {
+//                    d2 = arrayOfDouble1[i];
+//                    System.out.println("D1______"+Double.toString(d1)+"D2_____"+Double.toString(d2));
+//                }
+//                d3 += arrayOfDouble1[i];
+//                System.out.println("D3______"+Double.toString(d3));
+//                i++;
+//                break;
+//            }
+//            d6 += Math.pow(arrayOfDouble1[j] - d4, 2.0D);
+//        }
+//        System.out.println(Arrays.toString(arrayOfDouble2));

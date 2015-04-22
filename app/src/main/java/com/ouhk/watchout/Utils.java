@@ -6,37 +6,60 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 
     private static final String TAG="Utils.java______";
-	private static ArrayList<HashMap<String,String>> arraylist = new ArrayList<HashMap<String,String>>();
-	private static ArrayList<HashMap<String,String>> showlist = new ArrayList<HashMap<String,String>>();
-	private static Long[] tempTimeMillis = null;
+    private static ArrayList<HashMap<String,String>> arraylist = new ArrayList<HashMap<String,String>>();
+    private static ArrayList<HashMap<String,String>> showlist = new ArrayList<HashMap<String,String>>();
+    private static Long[] tempTimeMillis = null;
+
 	public static void put(HashMap<String,String> map){
 		arraylist.add(map);
 	}
-	
+
 	public static ArrayList<HashMap<String, String>> getList(){
 		return arraylist;
 	}
-	
+
 	public static HashMap<String, String> getItem(int position){
 		return arraylist.get(position);
 	}
-	
-	public static void sort(){
+
+    public static void sort(){
 		int size = arraylist.size();
         for (int i =size-1; i>= 0; i--)
-                for (int j = 0; j < i; j++)
+                for (int j = 0; j < i; j++)                        //10:10                                            //10:11
                         if (Long.parseLong(arraylist.get(j).get("datetime"))< Long.parseLong(arraylist.get(j+1).get("datetime"))) {
                                 HashMap<String,String> temp = arraylist.get(j);
                                 arraylist.set(j, arraylist.get(j+1));
                                 arraylist.set(j+1, temp);
                         }
 	}
-	
-	public static void MillisToDate(ArrayList<HashMap<String,String>> arraylist){
+
+    public static void sortOnRestart(){
+        int size = arraylist.size();
+        String dateTimeFromList;
+        Matcher m;
+        Pattern p = Pattern.compile("(\\d+):(\\d+)");
+        for (int i =size-1; i>= 0; i--)
+            for (int j = 0; j < i; j++) {
+                //todo..
+                dateTimeFromList = arraylist.get(j).get("datetime");
+                m = p.matcher(dateTimeFromList);
+                if(m.matches()){
+                    int hrs = Integer.parseInt(m.group(1));
+                    int min = Integer.parseInt(m.group(2));
+                    long ms = (long)hrs*60*60*1000+min*60*1000;
+                }
+            }
+    }
+
+
+
+    public static void MillisToDate(ArrayList<HashMap<String,String>> arraylist){
 		int size = arraylist.size();
 		tempTimeMillis = new Long[size];
 		for(int i=0;i<size;i++)

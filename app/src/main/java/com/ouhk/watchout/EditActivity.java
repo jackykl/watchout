@@ -45,9 +45,8 @@ public class EditActivity extends Activity{
 		datetext = (TextView)findViewById(R.id.dateText);
 		edittext = (EditText)findViewById(R.id.editText);
 		alertTextView = (TextView)findViewById(R.id.timeText);
-		
 		user = new UserInfo();
-		user.setAlerttime(alerttime);
+//		user.setAlerttime(alerttime);
 		timeSetButton.setOnClickListener( new OnClickListener(){
 			@Override
 			public void onClick(View v) {
@@ -96,7 +95,7 @@ public class EditActivity extends Activity{
 		int day = time.monthDay;
 		int hour = time.hour;
 		int minute = time.minute;
-		tempDatetime1 = month+"/"+day+"/"+'\n'+Utils.format(hour)+":"+Utils.format(minute);
+		tempDatetime1 = month+"/"+day+'\n'+Utils.format(hour)+":"+Utils.format(minute);
 		datetext.setText(tempDatetime1);
 		edittext.setText(content);
 		String tempS = new String(alerttime);
@@ -114,6 +113,7 @@ public class EditActivity extends Activity{
 		time.setToNow();
 
 		user.setAlerttime(alerttime);
+
 		datetime =""+time.toMillis(true);
 		user.setDatetime(datetime);
 		time.set(time.toMillis(true));
@@ -124,13 +124,12 @@ public class EditActivity extends Activity{
 		if((!content.isEmpty() && !tempContent.equals(content)) || !alerttime.equals("") && !alerttime.equals(tempAlerttime)){
 			ArrayList<HashMap<String,String>> list = Utils.getList();
 			SQLiteUtils sqlite = new SQLiteUtils();
-			System.out.println("---------------------------");
+			System.out.println("----------DB Query Inserted-----------");
 			DatabaseHelper dbHelper = sqlite.createDBHelper(EditActivity.this);
 			HashMap<String,String> map = new HashMap<String,String>();
 			map.put("datetime",user.getDatetime());
 			map.put("content",user.getContent());
 			map.put("alerttime",user.getAlerttime());
-			
 			if(tempContent.isEmpty())  {
 				list.add(map);
 				sqlite.insert(dbHelper,user);
@@ -142,12 +141,8 @@ public class EditActivity extends Activity{
 			}
 			if(!alerttime.equals(tempAlerttime) && !alerttime.equals(""))
 			{
-                System.out.println("TempTime is "+tempAlerttime);
-                System.out.println("The alert time is "+alerttime);
-				System.out.println("alerttime done!");
 				alertSet();
 			}
-				
 		}
 	}
 	

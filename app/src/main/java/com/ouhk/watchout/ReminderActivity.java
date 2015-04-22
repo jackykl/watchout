@@ -34,7 +34,7 @@ public class ReminderActivity extends ListActivity implements SearchView.OnQuery
     int index = 0;
     PopupWindow mPopupWindow = null;
     ArrayList<HashMap<String, String>> showlist, list = Utils.getList();
-    DatabaseHelper dbHelper = new DatabaseHelper(ReminderActivity.this, "watchout_db");
+    DatabaseHelper dbHelper = new DatabaseHelper(ReminderActivity.this, "watchout.db");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,8 +165,8 @@ public class ReminderActivity extends ListActivity implements SearchView.OnQuery
     @Override
     protected void onRestart() {
         super.onRestart();
-        Utils.sort();
-        Utils.MillisToDate(list);
+        Utils.sortOnRestart();
+        //Utils.MillisToDate(list);
         getListView().setOnItemClickListener(new ListItemClickListener());
         listAdapter = new SimpleAdapter(this, list, R.layout.list_item, new String[]{"datetime", "content"},
                 new int[]{R.id.datetime, R.id.content});

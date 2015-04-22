@@ -15,5 +15,7 @@
     <string name="alertName">Alert Name</string>
     <string name="positiveButton">Accept</string>
     <string name="negativeButton">Ignore</string>
+    <string name="title_activity_fall_log">FallLogActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
 
 </resources>

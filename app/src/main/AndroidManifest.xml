@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -32,6 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".Fall_DetectionService"
             android:enabled="true" />
@@ -43,8 +45,13 @@
             android:name=".ReminderActivity"
             android:label="@string/title_activity_reminder" >
         </activity>
-        <activity android:name=".EditActivity"/>
-        <activity android:name=".alert.AlertDialogActivity"/>
+        <activity android:name=".EditActivity" />
+        <activity android:name=".alert.AlertDialogActivity" />
+        <activity android:name=".LogActivity" />
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
     </application>
 
 </manifest>

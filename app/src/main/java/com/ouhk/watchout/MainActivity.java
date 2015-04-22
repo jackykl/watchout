@@ -92,16 +92,15 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface
         public void toAndroidActivity() {
-            String toast = "Going into activity.";
-            //Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
-            Intent foreGroundInstance = new Intent(getApplicationContext(), Fall_DetectionService.class);
-            foreGroundInstance.putExtra("mIsInForeground",mIsInForeground);
-            startService(foreGroundInstance);
+            Log.d(TAG,"Going to log activity");
+            Intent intent = new Intent(getApplicationContext(), LogActivity.class);
+            //Intent foreGroundInstance = new Intent(getApplicationContext(), Fall_DetectionServices.class);
+            //foreGroundInstance.putExtra("mIsInForeground",mIsInForeground);
+            startActivity(intent);
+            //startService(foreGroundInstance);
         }
         @JavascriptInterface
         public void toMedicationReminder() {
-            String toast = "Going into Medication Activity.";
-            Toast.makeText(myContext, toast, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), ReminderActivity.class);
             startActivity(intent);
         }

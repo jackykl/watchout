@@ -22,5 +22,16 @@ public class UserInfo {
 	public void setAlerttime(String alerttime) {
 		this.alerttime = alerttime;
 	}
+    public String getLogDateTime() {return datetime; }
+    public void setLogDatetime(String date) {
+        this.datetime = date;
+    }
+    public String getLogContent() {
+        return content;
+    }
+    public void setLogContent(String content) {
+        this.content = content;
+    }
+
 
 }

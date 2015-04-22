@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ouhk.watchout.UserInfo;
 
 public class SQLiteUtils {
-	public static final String DATABASE_NAME = "watchout_db";
+	public static final String DATABASE_NAME = "watchout.db";
 
 	public static final String DATETIME = "datetime";
     public static final String CONTENT = "content";

@@ -9,7 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	private static final int VERSION = 1;
 
-	public DatabaseHelper(Context context, String name, CursorFactory factory,
+    public DatabaseHelper(Context context, String name, CursorFactory factory,
 			int version) {
 		super(context, name, factory, version);
 		
@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("create table user(datetime varchar(30),content varchar(100),alerttime varchar(30))");
+		db.execSQL("create table user(datetime varchar(60),content varchar(100),alerttime varchar(60))");
 	}
 
 	@Override
