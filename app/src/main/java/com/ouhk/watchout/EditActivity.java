@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -113,7 +114,7 @@ public class EditActivity extends Activity{
 		time.setToNow();
 
 		user.setAlerttime(alerttime);
-
+        Log.d("TAG_____alerttime = ",alerttime);
 		datetime =""+time.toMillis(true);
 		user.setDatetime(datetime);
 		time.set(time.toMillis(true));
@@ -130,6 +131,7 @@ public class EditActivity extends Activity{
 			map.put("datetime",user.getDatetime());
 			map.put("content",user.getContent());
 			map.put("alerttime",user.getAlerttime());
+            Log.d("The alert time has been updated!! ___",user.getAlerttime());
 			if(tempContent.isEmpty())  {
 				list.add(map);
 				sqlite.insert(dbHelper,user);
@@ -145,8 +147,6 @@ public class EditActivity extends Activity{
 			}
 		}
 	}
-	
-	
 	private void alertSet(){
 		Intent intent = new Intent("android.intent.action.ALARMRECEIVER");
 		intent.putExtra("datetime", datetime);

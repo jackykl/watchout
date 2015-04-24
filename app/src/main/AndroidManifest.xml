@@ -50,6 +50,7 @@
         <activity android:name=".LogActivity" />
         <activity
             android:name=".SettingActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:label="@string/title_activity_setting" >
         </activity>
     </application>

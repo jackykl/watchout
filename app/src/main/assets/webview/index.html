@@ -38,6 +38,10 @@
         {
             Android.toMedicationReminder();
         }
+        function toSetFun()
+        {
+            Android.toSettings();
+        }
         function updateClock()
         {
             var d = new Date();
@@ -64,7 +68,7 @@
 								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-dashboard">Control Panel</span></a></li>
 								<li><a href="#top" id="detection-manager" onClick="toAndroidFun()"><span class="icon fa-comments">Fall History</span></a></li>
 								<li><a href="#top" id="medication-reminder" onClick="toMedFun()"><span class="icon fa-medkit">Medication Reminder</span></a></li>
-								<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-gears">Settings</span></a></li>
+								<li><a href="#top" id="settings-manager" onClick="toSetFun()"><span class="icon fa-gears">Settings</span></a></li>
 							</ul>
 						</nav>			
 				</div>
@@ -86,7 +90,7 @@
 						<div class="container">
 							<header>
 								<h2 class="alt">Welcome <strong id="usrname"></strong>.</h2>
-								<p id="systime"></p>
+								<h4 id="systime"></h4>
 							</header>
 							<footer>
 								<a href="#portfolio" class="button scrolly">Home<span style="padding-left:1em;">View</span></a>

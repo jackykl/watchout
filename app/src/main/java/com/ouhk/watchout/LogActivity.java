@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -33,12 +34,14 @@ public class LogActivity extends Activity {
     ArrayList<HashMap<String, String>> oslist = new ArrayList<HashMap<String, String>>();
 
     //URL to get JSON Array
-    private static String url = "http://api.learn2crack.com/android/jsonos/";
+    private static String url = "http://192.168.246.117:8080/fetchfalllog";
     //JSON Node Names
+
+    //status, dateTime
     private static final String TAG_OS = "android";
-    private static final String TAG_VER = "ver";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_API = "api";
+    private static final String TAG_VER = "status";
+    private static final String TAG_NAME = "dateTime";
+//    private static final String TAG_API = "api";
 
     JSONArray android = null;
 
@@ -70,7 +73,7 @@ public class LogActivity extends Activity {
             super.onPreExecute();
             ver = (TextView)findViewById(R.id.vers);
             name = (TextView)findViewById(R.id.name);
-            api = (TextView)findViewById(R.id.api);
+            //api = (TextView)findViewById(R.id.api);
 //            pDialog = new ProgressDialog(LogActivity.this);
 //            pDialog.setMessage("Getting Data ...");
 //            pDialog.setIndeterminate(false);
@@ -81,11 +84,11 @@ public class LogActivity extends Activity {
 
         @Override
         protected JSONObject doInBackground(String... args) {
-
             JSONParser jParser = new JSONParser();
 
             // Getting JSON from URL
             JSONObject json = jParser.getJSONFromUrl(url);
+            //Log.d("JSON", json.toString());
             return json;
         }
         @Override
@@ -100,22 +103,22 @@ public class LogActivity extends Activity {
                     // Storing  JSON item in a Variable
                     String ver = c.getString(TAG_VER);
                     String name = c.getString(TAG_NAME);
-                    String api = c.getString(TAG_API);
+                    //String api = c.getString(TAG_API);
                     // Adding value HashMap key => value
 
                     HashMap<String, String> map = new HashMap<String, String>();
 
                     map.put(TAG_VER, ver);
                     map.put(TAG_NAME, name);
-                    map.put(TAG_API, api);
+                    //map.put(TAG_API, api);
 
                     oslist.add(map);
                     list=(ListView)findViewById(R.id.list);
 
                     ListAdapter adapter = new SimpleAdapter(LogActivity.this, oslist,
                             R.layout.list_v,
-                            new String[] { TAG_VER,TAG_NAME, TAG_API }, new int[] {
-                            R.id.vers,R.id.name,R.id.api});
+                            new String[] { TAG_VER,TAG_NAME }, new int[] {
+                            R.id.vers,R.id.name});
 
                     list.setAdapter(adapter);
                     list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

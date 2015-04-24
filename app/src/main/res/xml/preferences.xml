@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="General" android:key="general_settings">
+        <EditTextPreference android:title="Your Name"
+        android:key="username"
+        android:summary="Please provide your username."></EditTextPreference>
+        <EditTextPreference android:title="Elderly Name"
+            android:key="elderlyname"
+            android:summary="Please provide the name of the elderly."></EditTextPreference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Contacts" android:key="contact_settings">
+        <EditTextPreference android:title="Phone Number"
+            android:inputType="number"
+            android:key="phonenumber"
+            android:summary="Please provide your phone number for emergency."></EditTextPreference>
+        <CheckBoxPreference android:title="Emergency services"
+            android:defaultValue="false"
+            android:summary="This option if selected will allow the application to call for emergency services."
+            android:key="emServices" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Utilities" android:key="util_settings">
+        <CheckBoxPreference android:title="Application Updates"
+        android:defaultValue="false"
+        android:summary="This option if selected will allow the application to check for latest versions."
+        android:key="appUpdates" />
+    </PreferenceCategory>
+</PreferenceScreen>
