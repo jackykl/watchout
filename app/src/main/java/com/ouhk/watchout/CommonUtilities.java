@@ -9,15 +9,12 @@ import android.content.Intent;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
-import android.support.v4.app.NotificationCompat.Builder;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
