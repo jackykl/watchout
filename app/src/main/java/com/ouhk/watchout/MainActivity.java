@@ -62,8 +62,8 @@ public class MainActivity extends Activity {
         });
         myWebView.loadUrl("file:///android_asset/webview/index.html");
         this.setContentView(myWebView);
-        //new Loader().execute();
-        //onStartService();
+        new Loader().execute();
+        onStartService();
     }
 
     public void onStartService() {
@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
         @Override
         protected JSONObject doInBackground(Void... params) {
 
-            return postJsonObject("http://192.168.246.117:8080/storesetting", makingJson());
+            return postJsonObject("http://192.168.246.45:8080/storesetting", makingJson());
         }
 
         @Override
@@ -254,7 +254,7 @@ public class MainActivity extends Activity {
         }
         @JavascriptInterface
         public void toMedicationReminder() {
-            Intent intent = new Intent(getApplicationContext(), ReminderActivity.class);
+            Intent intent = new Intent(getApplicationContext(), AlarmListActivity.class);
             startActivity(intent);
         }
 

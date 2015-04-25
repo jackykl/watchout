@@ -53,6 +53,20 @@
             android:theme="@android:style/Theme.NoTitleBar"
             android:label="@string/title_activity_setting" >
         </activity>
+
+        <activity android:name=".AlarmListActivity" />
+        <activity android:name=".AlarmScreen" />
+
+        <activity android:name=".AlarmDetailsActivity" />
+
+        <service android:name=".AlarmService"
+            android:enabled="true"/>
+
+        <receiver android:name=".AlarmManagerHelper" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

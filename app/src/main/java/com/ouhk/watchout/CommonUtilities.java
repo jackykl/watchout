@@ -12,10 +12,14 @@ import android.util.Log;
 import android.widget.Toast;
 import android.support.v4.app.NotificationCompat.Builder;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 /**
  * Created by Ravic on 1/29/15.
@@ -24,41 +28,55 @@ public class CommonUtilities {
     // Tag used to log messages.
     static final String TAG = "Common Ultilities:";
     public Context context;
-    public Socket myClient;
+//    public Socket myClient;
     public InputStreamReader in;
     public BufferedReader br;
+    private SocketData SockData = new SocketData();
 
     public void socketConnection(Context _context) {
         Log.d(TAG, "______________________________Runnable in Common Util");
-        InetSocketAddress myIsa = new InetSocketAddress("123.202.86.187",8089);
         try {
-            this.context = _context;
-            Log.d(TAG,"_______________in Try block");
-            myClient = new Socket();
-            myClient.connect(myIsa, 1000);
-            in = new InputStreamReader(myClient.getInputStream());
-            br = new BufferedReader(in);
-            char[] buffer = new char[300];
-            int count = br.read(buffer, 0, 300);
-            String reply = new String(buffer, 0, count);
-            onMessageReceived(_context, reply);
-        }catch (IOException e) {
+            SockData.setServerIP("192.168.246.45");
+            SockData.setServerPort(8089);
+            SockData.setSocketObj(new java.net.Socket());
+            SockData.setSocketTimeout(30000);
+            InetAddress serverAddr = InetAddress.getByName(SockData.getServerIP());
+            SocketAddress sc_add = new InetSocketAddress(serverAddr, SockData.getServerPort());
+            SockData.getSocketObj().connect(sc_add, SockData.getSocketTimeout());
+            SockData.setOutStream(SockData.getSocketObj().getOutputStream());
+            SockData.setInStream(SockData.getSocketObj().getInputStream());
+
+            SockData.setDataOut(new DataOutputStream(SockData.getSocketObj().getOutputStream()));
+            SockData.setDataIn(new DataInputStream(SockData.getSocketObj().getInputStream()));
+            SockData.setInStreamReader(new InputStreamReader(SockData.getDataIn()));
+            SockData.setBr(new BufferedReader(SockData.getInStreamReader()));
+            Log.d(TAG, "Socket Running");
+            receivedData(_context);
+        }catch (Exception e) {
             Log.d(TAG, "Problem");
-            Log.d(TAG, e.getMessage());
-            Log.d(TAG, "Server IP is "+myIsa);
+            Log.d(TAG, e.toString());
+            // Log.d(TAG, "Server IP is "+myIsa);
         }
     }
 
-
-    public void socketConnectionClosed() {
-        try {
-            in.close();
-            br.close();
-            myClient.close();
-        }catch (IOException e) {
-            System.out.print("Problem");
+    public void receivedData(Context _context) throws IOException {
+        while(true) {
+            Log.d(TAG, "____________Received DATA Method Entry.......");
+            String recvData = SockData.getBr().readLine()+"\n";
+            Log.d(TAG, "Data: " + recvData);
+            onMessageReceived(_context, recvData);
         }
     }
+
+//    public void socketConnectionClosed() {
+//        try {
+//            in.close();
+//            br.close();
+//            myClient.close();
+//        }catch (IOException e) {
+//            System.out.print("Problem");
+//        }
+//    }
 
     // Add a notification
     public void onMessageReceived(Context _context, String reply) {
