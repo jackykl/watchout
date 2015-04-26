@@ -33,7 +33,7 @@ public class CommonUtilities {
     public void socketConnection(Context _context) {
         Log.d(TAG, "______________________________Runnable in Common Util");
         try {
-            SockData.setServerIP("192.168.246.45");
+            SockData.setServerIP("192.168.0.4");
             SockData.setServerPort(8089);
             SockData.setSocketObj(new java.net.Socket());
             SockData.setSocketTimeout(30000);
@@ -90,6 +90,7 @@ public class CommonUtilities {
         NotificationCompat.Builder myBuilder = new NotificationCompat.Builder(_context)
                         .setSmallIcon(R.drawable.app_icon)
                         .setContentTitle("'Watch'Out!")
+                        .setTicker(reply)
                         .setContentText(reply)
                         .setContentIntent(appIntent)
                         .setDefaults(Notification.DEFAULT_ALL);

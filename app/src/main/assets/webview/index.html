@@ -24,11 +24,33 @@
     <script>
         $( document ).ready(function()
         {
+            fetchImage();
+            updateImageTime();
             setInterval('updateClock()', 1000);
+            setInterval('updateImageTime()', 5000);
+            setInterval('fetchImage()', 5000);
         });
+        function fetchImage()
+        {
+        $.ajax({
+                url: 'http://192.168.0.4:8080/fetchimage',
+                type: "get",
+                dataType: "json",
+                cache: false,
+                success: function (data) {
+                    updateIMG(data[0].data);
+                }
+            });
+        }
         function change(theUserName)
         {
-            document.getElementById("usrname").innerHTML=theUserName;
+            if(theUserName == "null") {
+                document.getElementById("username").innerHTML="User";
+                document.getElementById("username_title").innerHTML="User";
+            }else{
+                document.getElementById("username").innerHTML=theUserName;
+                document.getElementById("username_title").innerHTML=theUserName;
+            }
         }
         function toAndroidFun()
         {
@@ -46,10 +68,28 @@
         {
             var d = new Date();
             var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            var date = d.getDay() + " " + month[d.getMonth()] + ", " +  d.getFullYear();
+            var date = d.getDate() + " " + month[d.getMonth()] + ", " +  d.getFullYear();
             var time = d.toLocaleTimeString().toLowerCase();
-            $("#systime").text(date + " at  " + time);
+            $("#systime").text(date+time);
         
+        }
+        function updateImageTime()
+        {
+            var d = new Date();
+            var myTime = d.toLocaleTimeString().toLowerCase();
+            $("#imgTime").text(myTime);
+
+        }
+        function updateIMG(myVal)
+        {
+          var canvas = document.getElementById("c");
+		  var ctx = canvas.getContext("2d");
+		  var image = new Image();
+
+     	  image.onload = function() {
+    		ctx.drawImage(image, 0, 0, 330, 240);
+          };
+          image.src = "data:image/  png;base64,"+myVal;
         }
     </script>
 	<body>
@@ -59,13 +99,13 @@
 					<!-- Logo -->
 						<div id="logo">
 							<span class="image avatar48"><img src="images/avatar.jpg" alt="" /></span>
-							<h1 id="title"><p id="usrname"></p></h1>
+							<h1 id="title"><p id="username_title"></p></h1>
 							<p>@'WATCH' OUT</p>
 						</div>
 					<!-- Nav -->
 						<nav id="nav">
 							<ul>
-								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-dashboard">Control Panel</span></a></li>
+								<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-dashboard">Main Panel</span></a></li>
 								<li><a href="#top" id="detection-manager" onClick="toAndroidFun()"><span class="icon fa-comments">Fall History</span></a></li>
 								<li><a href="#top" id="medication-reminder" onClick="toMedFun()"><span class="icon fa-medkit">Medication Reminder</span></a></li>
 								<li><a href="#top" id="settings-manager" onClick="toSetFun()"><span class="icon fa-gears">Settings</span></a></li>
@@ -79,7 +119,7 @@
 							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
 							<li><a href="#" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
 							<li><a href="#" class="icon fa-phone"><span class="label">Hotline</span></a></li>
-							<li><span class="notification-count" id="notification">5</span><a href="#" class="icon fa-globe"><span class="label">Notification</span></a></li>
+							<li><!--<span class="notification-count" id="notification">N</span>--><a href="#" class="icon fa-globe"><span class="label">Notification</span></a></li>
 						</ul>
 				</div>
 			</div>
@@ -89,14 +129,14 @@
 					<section id="top" class="one dark cover">
 						<div class="container">
 							<header>
-								<h2 class="alt">Welcome <strong id="usrname"></strong>.</h2>
+								<h2 class="alt">Welcome <strong id="username"></strong>.</h2>
 								<h4 id="systime"></h4>
 							</header>
 							<footer>
 								<a href="#portfolio" class="button scrolly">Home<span style="padding-left:1em;">View</span></a>
 							</footer>
 							<footer>
-								<a href="#about" class="button scrolly">Control Panel</a>
+								<a href="#" class="button scrolly" onClick="toAndroidFun()">Fall<span style="padding-left:1em;">History</span></a>
 							</footer>
 						</div>
 					</section>
@@ -109,9 +149,9 @@
 							<div class="row">
 								<div class="4u">
 									<article class="item">
-										<a href="#" class="image fit"><img src="images/frontdoor.jpg" alt="" /></a>
+                                        <canvas width="330" height="240" style="position-relative;" id="c"></canvas>
 										<header>
-											<h3>Front Door</h3><i> May 15, 9:16 AM </i>
+											<h3>Front Door</h3><i>Image Time: <h4 id="imgTime"></h4></i>
 										</header>
 
 									</article>
@@ -140,9 +180,9 @@
 					<section id="about" class="three">
 						<div class="container">
 							<header>
-								<h2>Control Panel</span></h2>
-							</header>
-							<a href="#" class="image featured"><img src="images/pic08.jpg" alt="" /></a>
+								<h2>'Watch' Out</span></h2>
+							<!--</header>-->
+							<!--<a href="#" class="image featured"><img src="images/pic08.jpg" alt="" /></a>-->
 							<p>We are a group of people who aims to provide a better and intelligent life for your elderly.</p>
 						</div>
 					</section>			
